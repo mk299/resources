@@ -44,6 +44,36 @@
       margin: 0 auto;
     }
 
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-copy {
+      min-width: 0;
+    }
+
+    .official-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 9px 15px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 8px;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+      text-decoration: none;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .official-link:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
     h1 {
       margin: 0 0 8px;
       font-size: clamp(1.8rem, 3vw, 2.6rem);
@@ -233,6 +263,15 @@
     }
 
     @media (max-width: 900px) {
+      .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .official-link {
+        align-self: flex-start;
+      }
+
       .controls {
         grid-template-columns: 1fr;
       }
@@ -250,31 +289,20 @@
 <body>
   <header class="page-header">
     <div class="header-inner">
-      <h1>WinActorライブラリ一覧</h1>
-      <p class="subtitle">プチライブラリ・スイートライブラリ・サンプルシナリオを分類して整理</p>
-      <p style="margin: 16px 0 0;">
-        <a
-          href="https://winactor.biz/knowledge/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style="
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 8px;
-            color: #ffffff;
-            background: rgba(255,255,255,0.12);
-            text-decoration: none;
-            font-weight: 700;
-          "
-        >
-          WinActorナレッジ公式サイト
-          <span aria-hidden="true">↗</span>
-        </a>
-      </p>
+      <div class="header-copy">
+        <h1>WinActorライブラリ一覧</h1>
+        <p class="subtitle">プチライブラリ・スイートライブラリ・サンプルシナリオを分類して整理</p>
+      </div>
 
+      <a
+        class="official-link"
+        href="https://winactor.biz/knowledge/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        WinActorナレッジ公式サイト
+        <span aria-hidden="true">↗</span>
+      </a>
     </div>
   </header>
 
