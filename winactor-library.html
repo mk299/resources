@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WinActorライブラリ一覧</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #173b5f;
+      --blue: #246b9b;
+      --light-blue: #eaf4fb;
+      --border: #d8e1e8;
+      --text: #24313d;
+      --muted: #657482;
+      --surface: #ffffff;
+      --background: #f4f7f9;
+      --shadow: 0 10px 28px rgba(20, 54, 82, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN",
+        "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+      color: var(--text);
+      background: var(--background);
+      line-height: 1.6;
+    }
+
+    .page-header {
+      padding: 42px 24px 36px;
+      color: #fff;
+      background: linear-gradient(135deg, #173b5f 0%, #246b9b 100%);
+    }
+
+    .header-inner,
+    main {
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    main {
+      padding: 26px 20px 50px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) 220px 220px auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 16px;
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .control-group {
+      display: grid;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 12px;
+      border: 1px solid #bfcbd5;
+      border-radius: 9px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 3px solid rgba(36, 107, 155, 0.18);
+      border-color: var(--blue);
+    }
+
+    button {
+      width: auto;
+      padding-inline: 18px;
+      cursor: pointer;
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    button:hover {
+      filter: brightness(0.94);
+    }
+
+    .result-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 12px 2px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      min-width: 1150px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      color: #fff;
+      background: var(--navy);
+      font-size: 0.86rem;
+      white-space: nowrap;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f9fbfc;
+    }
+
+    tbody tr:hover {
+      background: #eef6fb;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .number {
+      width: 62px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .category-badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--light-blue);
+      color: #15577f;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .library-name {
+      min-width: 270px;
+      font-weight: 700;
+    }
+
+    .usage {
+      min-width: 330px;
+    }
+
+    .link-cell {
+      min-width: 126px;
+      white-space: nowrap;
+    }
+
+    .link-cell a {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 7px;
+      color: #fff;
+      background: var(--blue);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .link-cell a:hover {
+      filter: brightness(0.92);
+    }
+
+    .empty-message {
+      display: none;
+      padding: 36px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer {
+      padding: 22px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 900px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .result-info {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <div class="header-inner">
+      <h1>WinActorライブラリ一覧</h1>
+      <p class="subtitle">プチライブラリ・スイートライブラリ・サンプルシナリオを分類して整理</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="controls" aria-label="絞り込み">
+      <div class="control-group">
+        <label for="searchInput">キーワード検索</label>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="ライブラリ名・用途・分類から検索"
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="control-group">
+        <label for="categoryFilter">分類</label>
+        <select id="categoryFilter">
+          <option value="">すべての分類</option>
+          <option value="Excel操作">Excel操作</option>
+<option value="Web・ブラウザ操作">Web・ブラウザ操作</option>
+<option value="シナリオ制御・サンプル">シナリオ制御・サンプル</option>
+<option value="ファイル・フォルダ操作">ファイル・フォルダ操作</option>
+<option value="文字列・入力チェック">文字列・入力チェック</option>
+<option value="日付・時刻操作">日付・時刻操作</option>
+<option value="配列・辞書操作">配列・辞書操作</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="typeFilter">ライブラリ種別</label>
+        <select id="typeFilter">
+          <option value="">すべての種別</option>
+          <option value="サンプルシナリオ">サンプルシナリオ</option>
+<option value="スイートライブラリ">スイートライブラリ</option>
+<option value="プチライブラリ">プチライブラリ</option>
+        </select>
+      </div>
+
+      <button id="resetButton" type="button">条件をクリア</button>
+    </section>
+
+    <div class="result-info">
+      <span id="resultCount">全66件</span>
+      <span>URLは「ページを開く」から新しいタブで表示</span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>分類</th>
+            <th>サブ分類</th>
+            <th>ライブラリ種別</th>
+            <th>ライブラリ名</th>
+            <th>用途</th>
+            <th>ページURL</th>
+          </tr>
+        </thead>
+        <tbody id="libraryTableBody">
+          
+    <tr
+      data-category="Excel操作"
+      data-type="プチライブラリ"
+      data-search="excel操作 書き込み・設定 プチライブラリ excelファイルで列の値を設定するライブラリ excelの指定列へ値を設定する"
+    >
+      <td class="number">1</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>書き込み・設定</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">Excelファイルで列の値を設定するライブラリ</td>
+      <td class="usage">Excelの指定列へ値を設定する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2019/07/19_1012.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="プチライブラリ"
+      data-search="excel操作 書き込み・設定 プチライブラリ excel操作(値の設定(行と列指定(数値のみの指定も可能))) 行番号・列番号を指定してexcelセルへ値を設定する"
+    >
+      <td class="number">2</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>書き込み・設定</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">Excel操作(値の設定(行と列指定(数値のみの指定も可能)))</td>
+      <td class="usage">行番号・列番号を指定してExcelセルへ値を設定する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2019/04/22_853.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="プチライブラリ"
+      data-search="excel操作 書き込み・設定 プチライブラリ excel操作(行の書き込み) excelの指定行へデータを書き込む"
+    >
+      <td class="number">3</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>書き込み・設定</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">Excel操作(行の書き込み)</td>
+      <td class="usage">Excelの指定行へデータを書き込む</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2019/07/19_1013.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="プチライブラリ"
+      data-search="excel操作 検査・判定 プチライブラリ excelファイルにエラーが含まれるか判定するライブラリ excelファイル内に数式エラーなどが含まれるか判定する"
+    >
+      <td class="number">4</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>検査・判定</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">Excelファイルにエラーが含まれるか判定するライブラリ</td>
+      <td class="usage">Excelファイル内に数式エラーなどが含まれるか判定する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2019/01/30_610.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="プチライブラリ"
+      data-search="excel操作 検査・判定 プチライブラリ excel操作(シート存在有無チェック) 指定したexcelシートが存在するか確認する"
+    >
+      <td class="number">5</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>検査・判定</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">Excel操作(シート存在有無チェック)</td>
+      <td class="usage">指定したExcelシートが存在するか確認する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2020/04/10_2088.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="プチライブラリ"
+      data-search="excel操作 検索・取得 プチライブラリ excel操作(指定した行の最終列取得 ctrl+←) 指定行の最終データ列を取得する"
+    >
+      <td class="number">6</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>検索・取得</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">Excel操作(指定した行の最終列取得 Ctrl+←)</td>
+      <td class="usage">指定行の最終データ列を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2018/11/09_433.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="スイートライブラリ"
+      data-search="excel操作 検索・取得 スイートライブラリ excel操作(指定範囲の値を配列に追加) excelの指定範囲から値を取得し、配列へ追加する"
+    >
+      <td class="number">7</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>検索・取得</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">Excel操作(指定範囲の値を配列に追加)</td>
+      <td class="usage">Excelの指定範囲から値を取得し、配列へ追加する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/03/15_3827.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="プチライブラリ"
+      data-search="excel操作 検索・取得 プチライブラリ excel操作(最終列取得) excelシート上の最終列を取得する"
+    >
+      <td class="number">8</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>検索・取得</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">Excel操作(最終列取得)</td>
+      <td class="usage">Excelシート上の最終列を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2018/11/09_427.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="スイートライブラリ"
+      data-search="excel操作 検索・取得 スイートライブラリ excel操作(検索一致(インデックス指定)) excel検索の一致結果から、指定した順番の結果を取得する"
+    >
+      <td class="number">9</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>検索・取得</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">Excel操作(検索一致(インデックス指定))</td>
+      <td class="usage">Excel検索の一致結果から、指定した順番の結果を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2022/03/22_5214.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="スイートライブラリ"
+      data-search="excel操作 検索・取得 スイートライブラリ excel操作(検索一致_オプション指定) excel内を検索し、検索条件や一致方法を指定して該当セルを取得する"
+    >
+      <td class="number">10</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>検索・取得</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">Excel操作(検索一致_オプション指定)</td>
+      <td class="usage">Excel内を検索し、検索条件や一致方法を指定して該当セルを取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/12/20_4953.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="スイートライブラリ"
+      data-search="excel操作 検索・取得 スイートライブラリ excel操作(行の最終列へ移動) excelの指定行で、データが入力されている最終列へカーソルを移動する"
+    >
+      <td class="number">11</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>検索・取得</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">Excel操作(行の最終列へ移動)</td>
+      <td class="usage">Excelの指定行で、データが入力されている最終列へカーソルを移動する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/09/30_3260.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Excel操作"
+      data-type="スイートライブラリ"
+      data-search="excel操作 検索・取得 スイートライブラリ excel操作(行の読み取り(取得方法指定)) excelの指定行を、指定した取得方法で読み取る"
+    >
+      <td class="number">12</td>
+      <td><span class="category-badge">Excel操作</span></td>
+      <td>検索・取得</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">Excel操作(行の読み取り(取得方法指定))</td>
+      <td class="usage">Excelの指定行を、指定した取得方法で読み取る</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/03/29_3886.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 json変換 スイートライブラリ １次元配列操作(json文字列作成) 配列の内容からjson文字列を作成する"
+    >
+      <td class="number">13</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>JSON変換</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">１次元配列操作(JSON文字列作成)</td>
+      <td class="usage">配列の内容からJSON文字列を作成する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/02/26_3745.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 json変換 スイートライブラリ ２次元配列操作(json文字列作成) 配列の内容からjson文字列を作成する"
+    >
+      <td class="number">14</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>JSON変換</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">２次元配列操作(JSON文字列作成)</td>
+      <td class="usage">配列の内容からJSON文字列を作成する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/02/26_3746.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 保存・復元 スイートライブラリ １次元配列操作(ダンプ出力先指定) 配列データのダンプ出力先を指定して保存できるようにする"
+    >
+      <td class="number">15</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>保存・復元</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">１次元配列操作(ダンプ出力先指定)</td>
+      <td class="usage">配列データのダンプ出力先を指定して保存できるようにする</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/03/15_3823.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 保存・復元 スイートライブラリ １次元配列操作(ダンプ読み込み) 保存済みのダンプファイルから配列データを読み込む"
+    >
+      <td class="number">16</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>保存・復元</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">１次元配列操作(ダンプ読み込み)</td>
+      <td class="usage">保存済みのダンプファイルから配列データを読み込む</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/03/15_3821.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 保存・復元 スイートライブラリ ２次元配列操作(ダンプ出力先指定) 配列データのダンプ出力先を指定して保存できるようにする"
+    >
+      <td class="number">17</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>保存・復元</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">２次元配列操作(ダンプ出力先指定)</td>
+      <td class="usage">配列データのダンプ出力先を指定して保存できるようにする</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/03/15_3825.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 保存・復元 スイートライブラリ ２次元配列操作(ダンプ読み込み) 保存済みのダンプファイルから配列データを読み込む"
+    >
+      <td class="number">18</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>保存・復元</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">２次元配列操作(ダンプ読み込み)</td>
+      <td class="usage">保存済みのダンプファイルから配列データを読み込む</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/03/15_3822.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 加工・更新 スイートライブラリ 配列操作(2つの配列を連結) 2つの配列を1つの配列として連結する"
+    >
+      <td class="number">19</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>加工・更新</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">配列操作(2つの配列を連結)</td>
+      <td class="usage">2つの配列を1つの配列として連結する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/02/26_3747.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 加工・更新 スイートライブラリ 配列操作(値の並び替え) 配列内の値を指定条件で並び替える"
+    >
+      <td class="number">20</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>加工・更新</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">配列操作(値の並び替え)</td>
+      <td class="usage">配列内の値を指定条件で並び替える</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/01/29_3642.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 加工・更新 スイートライブラリ 配列操作(値連結) 配列内の値を区切り文字などで連結する"
+    >
+      <td class="number">21</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>加工・更新</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">配列操作(値連結)</td>
+      <td class="usage">配列内の値を区切り文字などで連結する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/01/29_3643.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 加工・更新 スイートライブラリ ２次元配列操作(複数情報更新) 配列内の複数の情報をまとめて更新する"
+    >
+      <td class="number">22</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>加工・更新</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">２次元配列操作(複数情報更新)</td>
+      <td class="usage">配列内の複数の情報をまとめて更新する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/12/20_4947.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 検索・抽出・判定 スイートライブラリ 配列操作(指定した条件の配列を抽出) 指定条件に一致する要素だけを配列から抽出する"
+    >
+      <td class="number">23</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>検索・抽出・判定</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">配列操作(指定した条件の配列を抽出)</td>
+      <td class="usage">指定条件に一致する要素だけを配列から抽出する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/11/30_4875.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 検索・抽出・判定 スイートライブラリ 配列操作(要素の検査(全要素が条件を満たす)) 配列の全要素が指定条件を満たすか判定する"
+    >
+      <td class="number">24</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>検索・抽出・判定</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">配列操作(要素の検査(全要素が条件を満たす))</td>
+      <td class="usage">配列の全要素が指定条件を満たすか判定する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/01/29_3635.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 検索・抽出・判定 スイートライブラリ 配列操作(要素の検査(条件を満たす要素を含む)) 配列内に指定条件を満たす要素があるか判定する"
+    >
+      <td class="number">25</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>検索・抽出・判定</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">配列操作(要素の検査(条件を満たす要素を含む))</td>
+      <td class="usage">配列内に指定条件を満たす要素があるか判定する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/01/29_3636.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 検索・抽出・判定 スイートライブラリ １次元配列操作(情報検索) 配列内から指定した情報を検索する"
+    >
+      <td class="number">26</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>検索・抽出・判定</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">１次元配列操作(情報検索)</td>
+      <td class="usage">配列内から指定した情報を検索する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/10/15_3308.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 検索・抽出・判定 スイートライブラリ ２次元配列操作(情報検索) 配列内から指定した情報を検索する"
+    >
+      <td class="number">27</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>検索・抽出・判定</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">２次元配列操作(情報検索)</td>
+      <td class="usage">配列内から指定した情報を検索する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/10/15_3309.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 検索・抽出・判定 スイートライブラリ ２次元配列操作(複数情報取得) 配列から複数の情報をまとめて取得する"
+    >
+      <td class="number">28</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>検索・抽出・判定</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">２次元配列操作(複数情報取得)</td>
+      <td class="usage">配列から複数の情報をまとめて取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/12/20_4946.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="サンプルシナリオ"
+      data-search="配列・辞書操作 辞書・取得 サンプルシナリオ 辞書の作成と検索を行うサンプルシナリオ 辞書を作成し、キーを使って情報を検索する"
+    >
+      <td class="number">29</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>辞書・取得</td>
+      <td>サンプルシナリオ</td>
+      <td class="library-name">辞書の作成と検索を行うサンプルシナリオ</td>
+      <td class="usage">辞書を作成し、キーを使って情報を検索する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/samplescenario/2020/05/27_2217.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 辞書・取得 スイートライブラリ 辞書操作(複数情報取得) 辞書データから複数情報を取得する"
+    >
+      <td class="number">30</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>辞書・取得</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">辞書操作(複数情報取得)</td>
+      <td class="usage">辞書データから複数情報を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/12/20_4948.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="配列・辞書操作"
+      data-type="スイートライブラリ"
+      data-search="配列・辞書操作 辞書・更新 スイートライブラリ 辞書操作(複数情報更新) 辞書データの複数情報を更新する"
+    >
+      <td class="number">31</td>
+      <td><span class="category-badge">配列・辞書操作</span></td>
+      <td>辞書・更新</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">辞書操作(複数情報更新)</td>
+      <td class="usage">辞書データの複数情報を更新する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/12/20_4949.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Web・ブラウザ操作"
+      data-type="プチライブラリ"
+      data-search="web・ブラウザ操作 ie操作（旧方式） プチライブラリ ie操作(テキストボックスに文字列を設定) ie上のテキストボックスへ文字列を入力する"
+    >
+      <td class="number">32</td>
+      <td><span class="category-badge">Web・ブラウザ操作</span></td>
+      <td>IE操作（旧方式）</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">IE操作(テキストボックスに文字列を設定)</td>
+      <td class="usage">IE上のテキストボックスへ文字列を入力する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2021/11/15_4768.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Web・ブラウザ操作"
+      data-type="スイートライブラリ"
+      data-search="web・ブラウザ操作 ie操作（旧方式） スイートライブラリ ie操作(指定classのチェック状態取得) ie上の指定クラス要素のチェック状態を取得する"
+    >
+      <td class="number">33</td>
+      <td><span class="category-badge">Web・ブラウザ操作</span></td>
+      <td>IE操作（旧方式）</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">IE操作(指定CLASSのチェック状態取得)</td>
+      <td class="usage">IE上の指定クラス要素のチェック状態を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/08/24_3058.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Web・ブラウザ操作"
+      data-type="スイートライブラリ"
+      data-search="web・ブラウザ操作 ie操作（旧方式） スイートライブラリ ie操作(指定classのチェック状態設定) ie上の指定クラス要素のチェック状態を設定する"
+    >
+      <td class="number">34</td>
+      <td><span class="category-badge">Web・ブラウザ操作</span></td>
+      <td>IE操作（旧方式）</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">IE操作(指定CLASSのチェック状態設定)</td>
+      <td class="usage">IE上の指定クラス要素のチェック状態を設定する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/08/24_3047.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Web・ブラウザ操作"
+      data-type="スイートライブラリ"
+      data-search="web・ブラウザ操作 ie操作（旧方式） スイートライブラリ ie操作(指定クラスのリストの全項目を取得) ie上の指定クラスのリストから全項目を取得する"
+    >
+      <td class="number">35</td>
+      <td><span class="category-badge">Web・ブラウザ操作</span></td>
+      <td>IE操作（旧方式）</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">IE操作(指定クラスのリストの全項目を取得)</td>
+      <td class="usage">IE上の指定クラスのリストから全項目を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/10/30_3348.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Web・ブラウザ操作"
+      data-type="スイートライブラリ"
+      data-search="web・ブラウザ操作 ie操作（旧方式） スイートライブラリ ie操作(指定クラスのリストの指定項目を取得) ie上の指定クラスのリストから指定項目を取得する"
+    >
+      <td class="number">36</td>
+      <td><span class="category-badge">Web・ブラウザ操作</span></td>
+      <td>IE操作（旧方式）</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">IE操作(指定クラスのリストの指定項目を取得)</td>
+      <td class="usage">IE上の指定クラスのリストから指定項目を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/10/30_3349.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Web・ブラウザ操作"
+      data-type="プチライブラリ"
+      data-search="web・ブラウザ操作 ie操作（旧方式） プチライブラリ ie操作(指定クラスのリストの指定項目を選択) ie上の指定クラスのリストから項目を選択する"
+    >
+      <td class="number">37</td>
+      <td><span class="category-badge">Web・ブラウザ操作</span></td>
+      <td>IE操作（旧方式）</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">IE操作(指定クラスのリストの指定項目を選択)</td>
+      <td class="usage">IE上の指定クラスのリストから項目を選択する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2021/11/15_4769.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Web・ブラウザ操作"
+      data-type="スイートライブラリ"
+      data-search="web・ブラウザ操作 ブラウザ操作 スイートライブラリ ブラウザ操作(値の取得,３つ) ブラウザ上の3つの要素から値をまとめて取得する"
+    >
+      <td class="number">38</td>
+      <td><span class="category-badge">Web・ブラウザ操作</span></td>
+      <td>ブラウザ操作</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">ブラウザ操作(値の取得,３つ)</td>
+      <td class="usage">ブラウザ上の3つの要素から値をまとめて取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/09/30_4617.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Web・ブラウザ操作"
+      data-type="スイートライブラリ"
+      data-search="web・ブラウザ操作 ブラウザ操作 スイートライブラリ ブラウザ操作(値の設定(入力再現),３つ) ブラウザ上の3つの要素へ、入力操作を再現して値を設定する"
+    >
+      <td class="number">39</td>
+      <td><span class="category-badge">Web・ブラウザ操作</span></td>
+      <td>ブラウザ操作</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">ブラウザ操作(値の設定(入力再現),３つ)</td>
+      <td class="usage">ブラウザ上の3つの要素へ、入力操作を再現して値を設定する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/09/30_4619.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="Web・ブラウザ操作"
+      data-type="プチライブラリ"
+      data-search="web・ブラウザ操作 ブラウザ操作 プチライブラリ ブラウザ操作(指定した要素の属性の値を取得) web要素の指定属性から値を取得する"
+    >
+      <td class="number">40</td>
+      <td><span class="category-badge">Web・ブラウザ操作</span></td>
+      <td>ブラウザ操作</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">ブラウザ操作(指定した要素の属性の値を取得)</td>
+      <td class="usage">Web要素の指定属性から値を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2021/12/20_4943.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="プチライブラリ"
+      data-search="ファイル・フォルダ操作 ファイル操作 プチライブラリ テキストファイル新規作成 新しいテキストファイルを作成する"
+    >
+      <td class="number">41</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>ファイル操作</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">テキストファイル新規作成</td>
+      <td class="usage">新しいテキストファイルを作成する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2021/06/30_4249.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="スイートライブラリ"
+      data-search="ファイル・フォルダ操作 ファイル操作 スイートライブラリ ファイルの内容を比較 2つのファイルの内容が一致するか比較する"
+    >
+      <td class="number">42</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>ファイル操作</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">ファイルの内容を比較</td>
+      <td class="usage">2つのファイルの内容が一致するか比較する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/08/24_3009.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="スイートライブラリ"
+      data-search="ファイル・フォルダ操作 ファイル操作 スイートライブラリ ファイル名に接頭辞と接尾辞を追加 ファイル名に接頭辞・接尾辞を追加する"
+    >
+      <td class="number">43</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>ファイル操作</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">ファイル名に接頭辞と接尾辞を追加</td>
+      <td class="usage">ファイル名に接頭辞・接尾辞を追加する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/12/25_3511.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="スイートライブラリ"
+      data-search="ファイル・フォルダ操作 ファイル操作 スイートライブラリ ファイル名に接頭辞と接尾辞を追加し変数に格納 ファイル名に接頭辞・接尾辞を付け、変更後の名前を変数へ格納する"
+    >
+      <td class="number">44</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>ファイル操作</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">ファイル名に接頭辞と接尾辞を追加し変数に格納</td>
+      <td class="usage">ファイル名に接頭辞・接尾辞を付け、変更後の名前を変数へ格納する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2022/01/24_5025.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="サンプルシナリオ"
+      data-search="ファイル・フォルダ操作 ファイル操作 サンプルシナリオ 現在日時のファイル名で画面キャプチャを保存するサンプルシナリオ ファイル・フォルダに対して「現在日時のファイル名で画面キャプチャを保存するサンプルシナリオ」の操作を行う"
+    >
+      <td class="number">45</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>ファイル操作</td>
+      <td>サンプルシナリオ</td>
+      <td class="library-name">現在日時のファイル名で画面キャプチャを保存するサンプルシナリオ</td>
+      <td class="usage">ファイル・フォルダに対して「現在日時のファイル名で画面キャプチャを保存するサンプルシナリオ」の操作を行う</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/samplescenario/2019/12/13_1525.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="プチライブラリ"
+      data-search="ファイル・フォルダ操作 フォルダ操作 プチライブラリ ファイル検索(サブフォルダを含む) サブフォルダを含めて条件に一致するファイルを検索する"
+    >
+      <td class="number">46</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>フォルダ操作</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">ファイル検索(サブフォルダを含む)</td>
+      <td class="usage">サブフォルダを含めて条件に一致するファイルを検索する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2020/09/15_3208.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="プチライブラリ"
+      data-search="ファイル・フォルダ操作 フォルダ操作 プチライブラリ フォルダの存在チェック 指定フォルダが存在するか確認する"
+    >
+      <td class="number">47</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>フォルダ操作</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">フォルダの存在チェック</td>
+      <td class="usage">指定フォルダが存在するか確認する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2022/01/24_5037.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="スイートライブラリ"
+      data-search="ファイル・フォルダ操作 フォルダ操作 スイートライブラリ フォルダ内のファイル名取得(フィルタ指定) 指定フォルダ内から、条件に一致するファイル名を取得する"
+    >
+      <td class="number">48</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>フォルダ操作</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">フォルダ内のファイル名取得(フィルタ指定)</td>
+      <td class="usage">指定フォルダ内から、条件に一致するファイル名を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/07/30_4370.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="スイートライブラリ"
+      data-search="ファイル・フォルダ操作 フォルダ操作 スイートライブラリ フォルダ内のファイル数取得(フィルタ指定) 指定フォルダ内の条件に一致するファイル数を取得する"
+    >
+      <td class="number">49</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>フォルダ操作</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">フォルダ内のファイル数取得(フィルタ指定)</td>
+      <td class="usage">指定フォルダ内の条件に一致するファイル数を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/07/16_4321.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="プチライブラリ"
+      data-search="ファイル・フォルダ操作 フォルダ操作 プチライブラリ フォルダ移動(movehere) フォルダを別の場所へ移動する"
+    >
+      <td class="number">50</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>フォルダ操作</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">フォルダ移動(MoveHere)</td>
+      <td class="usage">フォルダを別の場所へ移動する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2019/05/17_878.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="ファイル・フォルダ操作"
+      data-type="スイートライブラリ"
+      data-search="ファイル・フォルダ操作 フォルダ操作 スイートライブラリ フォルダ間のファイル比較 2つのフォルダ内のファイル構成や内容を比較する"
+    >
+      <td class="number">51</td>
+      <td><span class="category-badge">ファイル・フォルダ操作</span></td>
+      <td>フォルダ操作</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">フォルダ間のファイル比較</td>
+      <td class="usage">2つのフォルダ内のファイル構成や内容を比較する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/08/24_3008.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="日付・時刻操作"
+      data-type="プチライブラリ"
+      data-search="日付・時刻操作 処理時間計測 プチライブラリ 時間計測(終了) 処理時間の計測を終了し、経過時間を取得する"
+    >
+      <td class="number">52</td>
+      <td><span class="category-badge">日付・時刻操作</span></td>
+      <td>処理時間計測</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">時間計測(終了)</td>
+      <td class="usage">処理時間の計測を終了し、経過時間を取得する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2020/04/23_2120.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="日付・時刻操作"
+      data-type="プチライブラリ"
+      data-search="日付・時刻操作 処理時間計測 プチライブラリ 時間計測(開始) 処理時間の計測を開始する"
+    >
+      <td class="number">53</td>
+      <td><span class="category-badge">日付・時刻操作</span></td>
+      <td>処理時間計測</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">時間計測(開始)</td>
+      <td class="usage">処理時間の計測を開始する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2020/04/23_2119.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="日付・時刻操作"
+      data-type="プチライブラリ"
+      data-search="日付・時刻操作 和暦・西暦変換 プチライブラリ 和暦から西暦変換 和暦の日付を西暦表記へ変換する"
+    >
+      <td class="number">54</td>
+      <td><span class="category-badge">日付・時刻操作</span></td>
+      <td>和暦・西暦変換</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">和暦から西暦変換</td>
+      <td class="usage">和暦の日付を西暦表記へ変換する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2019/05/31_900.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="日付・時刻操作"
+      data-type="プチライブラリ"
+      data-search="日付・時刻操作 和暦・西暦変換 プチライブラリ 西暦から和暦変換 西暦の日付を和暦表記へ変換する"
+    >
+      <td class="number">55</td>
+      <td><span class="category-badge">日付・時刻操作</span></td>
+      <td>和暦・西暦変換</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">西暦から和暦変換</td>
+      <td class="usage">西暦の日付を和暦表記へ変換する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2020/04/10_2090.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="日付・時刻操作"
+      data-type="スイートライブラリ"
+      data-search="日付・時刻操作 形式・単位変換 スイートライブラリ 日付の形式変更 日付の表示形式を指定形式へ変換する"
+    >
+      <td class="number">56</td>
+      <td><span class="category-badge">日付・時刻操作</span></td>
+      <td>形式・単位変換</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">日付の形式変更</td>
+      <td class="usage">日付の表示形式を指定形式へ変換する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/08/24_3001.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="日付・時刻操作"
+      data-type="スイートライブラリ"
+      data-search="日付・時刻操作 形式・単位変換 スイートライブラリ 日時分秒を指定単位に変換 日時分秒の値を秒・分・時間など指定単位へ換算する"
+    >
+      <td class="number">57</td>
+      <td><span class="category-badge">日付・時刻操作</span></td>
+      <td>形式・単位変換</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">日時分秒を指定単位に変換</td>
+      <td class="usage">日時分秒の値を秒・分・時間など指定単位へ換算する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2022/02/21_5103.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="日付・時刻操作"
+      data-type="スイートライブラリ"
+      data-search="日付・時刻操作 形式・単位変換 スイートライブラリ 時間の形式変更 時刻・時間の表示形式を指定形式へ変換する"
+    >
+      <td class="number">58</td>
+      <td><span class="category-badge">日付・時刻操作</span></td>
+      <td>形式・単位変換</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">時間の形式変更</td>
+      <td class="usage">時刻・時間の表示形式を指定形式へ変換する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/08/24_2990.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="文字列・入力チェック"
+      data-type="スイートライブラリ"
+      data-search="文字列・入力チェック 入力値チェック スイートライブラリ 文字列の半角英数字記号チェック 文字列が半角英数字・記号のみで構成されているか確認する"
+    >
+      <td class="number">59</td>
+      <td><span class="category-badge">文字列・入力チェック</span></td>
+      <td>入力値チェック</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">文字列の半角英数字記号チェック</td>
+      <td class="usage">文字列が半角英数字・記号のみで構成されているか確認する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/09/15_3192.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="文字列・入力チェック"
+      data-type="スイートライブラリ"
+      data-search="文字列・入力チェック 入力値チェック スイートライブラリ 電話番号形式チェック 文字列が電話番号として妥当な形式か確認する"
+    >
+      <td class="number">60</td>
+      <td><span class="category-badge">文字列・入力チェック</span></td>
+      <td>入力値チェック</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">電話番号形式チェック</td>
+      <td class="usage">文字列が電話番号として妥当な形式か確認する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2020/09/15_3193.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="文字列・入力チェック"
+      data-type="プチライブラリ"
+      data-search="文字列・入力チェック 正規表現 プチライブラリ 正規表現(文字列存在確認) 正規表現に一致する文字列が含まれるか確認する"
+    >
+      <td class="number">61</td>
+      <td><span class="category-badge">文字列・入力チェック</span></td>
+      <td>正規表現</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">正規表現(文字列存在確認)</td>
+      <td class="usage">正規表現に一致する文字列が含まれるか確認する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2021/06/30_4253.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="文字列・入力チェック"
+      data-type="プチライブラリ"
+      data-search="文字列・入力チェック 正規表現 プチライブラリ 正規表現(文字列置換) 正規表現に一致する文字列を別の文字列へ置換する"
+    >
+      <td class="number">62</td>
+      <td><span class="category-badge">文字列・入力チェック</span></td>
+      <td>正規表現</td>
+      <td>プチライブラリ</td>
+      <td class="library-name">正規表現(文字列置換)</td>
+      <td class="usage">正規表現に一致する文字列を別の文字列へ置換する</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/library/2021/06/30_4250.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="シナリオ制御・サンプル"
+      data-type="スイートライブラリ"
+      data-search="シナリオ制御・サンプル エラー・例外処理 スイートライブラリ シナリオ実行速度の設定 「シナリオ実行速度の設定」の実装方法を示すサンプル"
+    >
+      <td class="number">63</td>
+      <td><span class="category-badge">シナリオ制御・サンプル</span></td>
+      <td>エラー・例外処理</td>
+      <td>スイートライブラリ</td>
+      <td class="library-name">シナリオ実行速度の設定</td>
+      <td class="usage">「シナリオ実行速度の設定」の実装方法を示すサンプル</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/sweet/2021/06/30_4243.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="シナリオ制御・サンプル"
+      data-type="サンプルシナリオ"
+      data-search="シナリオ制御・サンプル エラー・例外処理 サンプルシナリオ 例外処理グループを用いてシナリオを停止するサンプルシナリオ 例外処理グループを使って安全にシナリオを停止する実装例"
+    >
+      <td class="number">64</td>
+      <td><span class="category-badge">シナリオ制御・サンプル</span></td>
+      <td>エラー・例外処理</td>
+      <td>サンプルシナリオ</td>
+      <td class="library-name">例外処理グループを用いてシナリオを停止するサンプルシナリオ</td>
+      <td class="usage">例外処理グループを使って安全にシナリオを停止する実装例</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/samplescenario/2020/10/30_3370.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="シナリオ制御・サンプル"
+      data-type="サンプルシナリオ"
+      data-search="シナリオ制御・サンプル エラー・例外処理 サンプルシナリオ 監視ルールを使用してウェブページのエラーダイアログを検知するサンプルシナリオ 監視ルールでwebページのエラーダイアログを検知する実装例"
+    >
+      <td class="number">65</td>
+      <td><span class="category-badge">シナリオ制御・サンプル</span></td>
+      <td>エラー・例外処理</td>
+      <td>サンプルシナリオ</td>
+      <td class="library-name">監視ルールを使用してウェブページのエラーダイアログを検知するサンプルシナリオ</td>
+      <td class="usage">監視ルールでWebページのエラーダイアログを検知する実装例</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/samplescenario/2021/01/29_3633.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+
+    <tr
+      data-category="シナリオ制御・サンプル"
+      data-type="サンプルシナリオ"
+      data-search="シナリオ制御・サンプル エラー・例外処理 サンプルシナリオ 遷移先画面を検知して例外処理を実行するサンプルシナリオ 画面遷移結果を検知し、想定外の場合に例外処理を行う実装例"
+    >
+      <td class="number">66</td>
+      <td><span class="category-badge">シナリオ制御・サンプル</span></td>
+      <td>エラー・例外処理</td>
+      <td>サンプルシナリオ</td>
+      <td class="library-name">遷移先画面を検知して例外処理を実行するサンプルシナリオ</td>
+      <td class="usage">画面遷移結果を検知し、想定外の場合に例外処理を行う実装例</td>
+      <td class="link-cell">
+        <a href="https://winactor.biz/samplescenario/2020/11/16_3430.html" target="_blank" rel="noopener noreferrer">
+          ページを開く
+          <span aria-hidden="true">↗</span>
+        </a>
+      </td>
+    </tr>
+    
+        </tbody>
+      </table>
+      <div id="emptyMessage" class="empty-message">
+        条件に一致するライブラリが見つからなかった。
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    掲載件数：66件
+  </footer>
+
+  <script>
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const typeFilter = document.getElementById("typeFilter");
+    const resetButton = document.getElementById("resetButton");
+    const rows = Array.from(document.querySelectorAll("#libraryTableBody tr"));
+    const resultCount = document.getElementById("resultCount");
+    const emptyMessage = document.getElementById("emptyMessage");
+
+    function normalize(value) {
+      return value.trim().toLowerCase();
+    }
+
+    function filterRows() {
+      const keyword = normalize(searchInput.value);
+      const category = categoryFilter.value;
+      const libraryType = typeFilter.value;
+      let visibleCount = 0;
+
+      rows.forEach((row) => {
+        const matchesKeyword = !keyword || row.dataset.search.includes(keyword);
+        const matchesCategory = !category || row.dataset.category === category;
+        const matchesType = !libraryType || row.dataset.type === libraryType;
+        const visible = matchesKeyword && matchesCategory && matchesType;
+
+        row.hidden = !visible;
+        if (visible) visibleCount += 1;
+      });
+
+      resultCount.textContent =
+        visibleCount === rows.length
+          ? `全${rows.length}件`
+          : `${visibleCount}件表示／全${rows.length}件`;
+
+      emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
+    }
+
+    searchInput.addEventListener("input", filterRows);
+    categoryFilter.addEventListener("change", filterRows);
+    typeFilter.addEventListener("change", filterRows);
+
+    resetButton.addEventListener("click", () => {
+      searchInput.value = "";
+      categoryFilter.value = "";
+      typeFilter.value = "";
+      filterRows();
+      searchInput.focus();
+    });
+  </script>
+</body>
+</html>
